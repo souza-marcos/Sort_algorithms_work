@@ -22,7 +22,9 @@ struct AlgorithmDetails
 // Implementation of the sorting functions
 
 template <typename T>
-AlgorithmDetails bubbleSort(std::vector<T> &arr, void (*print)(std::vector<T> arr) = NULL)
+AlgorithmDetails bubbleSort(
+    std::vector<T> &arr,
+    void (*print)(std::vector<T> arr) = NULL)
 {
     AlgorithmDetails details;
     int i, j, temp;
@@ -46,7 +48,9 @@ AlgorithmDetails bubbleSort(std::vector<T> &arr, void (*print)(std::vector<T> ar
 }
 
 template <typename T>
-AlgorithmDetails insertionSort(std::vector<T> &arr, void (*print)(std::vector<T> arr) = NULL)
+AlgorithmDetails insertionSort(
+    std::vector<T> &arr,
+    void (*print)(std::vector<T> arr) = NULL)
 {
     AlgorithmDetails details;
     int p = 1;
@@ -77,7 +81,9 @@ AlgorithmDetails insertionSort(std::vector<T> &arr, void (*print)(std::vector<T>
 }
 
 template <typename T>
-AlgorithmDetails selectionSort(std::vector<T> &arr, void (*print)(std::vector<T> arr) = NULL)
+AlgorithmDetails selectionSort(
+    std::vector<T> &arr,
+    void (*print)(std::vector<T> arr) = NULL)
 {
     AlgorithmDetails details;
     int min;
@@ -105,7 +111,9 @@ AlgorithmDetails selectionSort(std::vector<T> &arr, void (*print)(std::vector<T>
 }
 
 template <typename T>
-AlgorithmDetails shellSort(std::vector<T> &arr, void (*print)(std::vector<T> arr) = NULL)
+AlgorithmDetails shellSort(
+    std::vector<T> &arr,
+    void (*print)(std::vector<T> arr) = NULL)
 {
     AlgorithmDetails details;
     int h = 1;
@@ -143,19 +151,32 @@ AlgorithmDetails quickSort(
     AlgorithmDetails &details,
     void (*print)(std::vector<T> arr) = NULL)
 {
+
+    T aux = arr[(end + init) / 2];
+    arr[(end + init) / 2] = arr[end];
+    arr[end] = aux;
+
     int pivotIndex = end, lessN = init, higherN = init;
+
     for (int i = init; i <= end; i++)
     {
-        if (arr[i] <= arr[pivotIndex])
+        /*std::cout << "P: " << pivotIndex << "\n"
+                  << "INIT " << init << "\n"
+                  << "end " << end << "\n"
+                  << "i " << i << "\n\n";*/
+        //std::cout << i << "\n";
+        if (arr[i] <= arr[pivotIndex]) //
         {
             T aux = arr[i];
             arr[i] = arr[lessN];
             arr[lessN] = aux;
-
             details.numSwaps++;
+
             lessN++;
             higherN++;
-            print(arr);
+
+            if (print != NULL)
+                print(arr);
         }
         else
         {
@@ -163,16 +184,23 @@ AlgorithmDetails quickSort(
         }
         details.numComparisons++;
     }
+    // system("pause");
+
     pivotIndex = lessN - 1;
+
     if ((pivotIndex - 1) > init)
         quickSort(arr, init, pivotIndex - 1, details, print);
+
     if ((pivotIndex + 1) < end)
         quickSort(arr, pivotIndex + 1, end, details, print);
+
     return details;
 }
 
 template <typename T>
-AlgorithmDetails quickSortWrapper(std::vector<T> &arr, void (*print)(std::vector<T> arr) = NULL)
+AlgorithmDetails quickSortWrapper(
+    std::vector<T> &arr,
+    void (*print)(std::vector<T> arr) = NULL)
 {
     AlgorithmDetails details;
     try
@@ -215,14 +243,15 @@ AlgorithmDetails mergeSort(
                 arr_aux[k] = arr[j];
                 j++;
             }
-            details.numComparisons += 2;
+            details.numComparisons++;
         }
         for (int i = 0; i < size; i++)
         {
             arr[i + start] = arr_aux[i];
-            details.numSwaps ++;
+            details.numSwaps++;
         }
-        print(arr);
+        if (print != NULL)
+            print(arr);
     }
     else
     {
@@ -231,16 +260,19 @@ AlgorithmDetails mergeSort(
             int aux = arr[start];
             arr[start] = arr[end];
             arr[end] = aux;
-            details.numSwaps ++;
-            print(arr);
+            details.numSwaps++;
+            if (print != NULL)
+                print(arr);
         }
-        details.numComparisons ++;
+        details.numComparisons++;
     }
     return details;
 }
 
 template <typename T>
-AlgorithmDetails mergeSortWrapper(std::vector<T> &arr, void (*print)(std::vector<T> arr) = NULL)
+AlgorithmDetails mergeSortWrapper(
+    std::vector<T> &arr,
+    void (*print)(std::vector<T> arr) = NULL)
 {
     AlgorithmDetails details;
     mergeSort(arr, 0, arr.size() - 1, details, print);

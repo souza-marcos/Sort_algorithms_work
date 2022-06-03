@@ -9,7 +9,7 @@ using namespace std;
 
 const string PATH_GET_DATA = "../data/in/";
 const string PATH_SAVE_DATA = "../data/out/";
-const int NUM_ALGORITHMS = 4;
+const int NUM_ALGORITHMS = 6;
 const int NUM_INTANCES = 12;
 
 string switchInstance(int n)
@@ -45,9 +45,11 @@ string switchInstance(int n)
 }
 
 template <typename T>
-std::function<AlgorithmDetails(std::vector<T> &, void (*print)(std::vector<T> arr))> switchSort(int n)
+std::function<AlgorithmDetails(
+    std::vector<T> &,
+    void (*print)(std::vector<T> arr))>
+switchSort(int n)
 {
-
     switch (n)
     {
     case 1:
@@ -89,7 +91,10 @@ string switchSortStr(int n)
 
 AlgorithmDetails sort(
     std::vector<int> &arr,
-    std::function<AlgorithmDetails(std::vector<int> &arr, void (*print)(std::vector<int> arr))> sortAlgorithm,
+    std::function<AlgorithmDetails(
+        std::vector<int> &arr,
+        void (*print)(std::vector<int> arr))>
+        sortAlgorithm,
     void (*print)(std::vector<int> arr) = NULL)
 {
     AlgorithmDetails details;
@@ -102,29 +107,59 @@ AlgorithmDetails sort(
     return details;
 }
 
+bool saveOnFile(string data)
+{
+    cout << "Digite o nome do arquivo: ";
+    string nome;
+    cin >> nome;
+
+    saveData(PATH_SAVE_DATA, nome, data);
+    return true;
+}
+
 void runAll()
 {
     vector<int> arr;
-    for (int i = 1; i <= NUM_INTANCES; i++)
+    AlgorithmDetails details[NUM_ALGORITHMS][NUM_INTANCES];
+    for (int i = 1; i <= NUM_ALGORITHMS; i++)
     {
-        string instance = switchInstance(i);
 
-        for (int j = 1; j <= NUM_ALGORITHMS; j++)
+        for (int j = 1; j <= NUM_INTANCES; j++)
         {
+            string instance = switchInstance(j);
             getDataFromInstance(PATH_GET_DATA, instance, arr);
             cout << "Instance: " << instance << endl;
-            cout << "Sort: " << switchSortStr(j) << endl;
+            cout << "Sort: " << switchSortStr(i) << endl;
             cout << "Ordenando..." << endl;
 
-            AlgorithmDetails detail = sort(arr, switchSort<int>(j));
+            details[i - 1][j - 1] = sort(arr, switchSort<int>(i));
 
             cout << "Ordenacao concluida!" << endl;
-            cout << "Tempo de execucao: " << detail.time.count() << "us" << endl;
-            cout << "Numero de comparacoes: " << detail.numComparisons << endl;
-            cout << "Numero de trocas: " << detail.numSwaps << endl;
-            cout << "Numero de elementos: " << detail.sizeIntance << "\n\n";
+            cout << "Tempo de execucao: " << details[i - 1][j - 1].time.count() << "us" << endl;
+            cout << "Numero de comparacoes: " << details[i - 1][j - 1].numComparisons << endl;
+            cout << "Numero de trocas: " << details[i - 1][j - 1].numSwaps << endl;
+            cout << "Numero de elementos: " << details[i - 1][j - 1].sizeIntance << "\n\n";
         }
         cout << "------------------------------------------------------\n\n";
+    }
+    cout << "Deseja Salvar no arquivo? (1) Sim (2) Nao";
+    int option;
+    cin >> option;
+    if (option == 1)
+    {
+        string data;
+        for (int i = 0; i < NUM_ALGORITHMS; i++)
+        {
+            for (int j = 0; j < NUM_INTANCES; j++)
+            {
+                data += switchSortStr(i + 1) + (string) "\t" +
+                        to_string(details[i][j].numComparisons) + "\t" +
+                        to_string(details[i][j].numSwaps) + "\t" +
+                        to_string(details[i][j].time.count()) + "\t" +
+                        to_string(details[i][j].sizeIntance) + "\n";
+            }
+        }
+        saveOnFile(data);
     }
 }
 
@@ -139,12 +174,15 @@ void runAllResearch()
 
         for (int j = 1; j <= NUM_ALGORITHMS; j++)
         {
-            for (int k = 1; k <= 10; k++)
+            for (int k = 1; k <= 10; k++) // 10
             {
                 getDataFromInstance(PATH_GET_DATA, instance, arr);
                 cout << "Sort: " << switchSortStr(j) << " Instance: " << instance << endl;
                 cout << "Ordenando..." << endl;
-                details[j - 1][i - 1][k - 1] = sort(arr, switchSort<int>(j));
+                details[j - 1][i - 1][k - 1] = sort(
+                    arr,
+                    switchSort<int>(j));
+                    
                 cout << "Ordenacao concluida!" << endl;
             }
         }
@@ -173,6 +211,20 @@ void runAllResearch()
             cout << "Numero de elementos: " << result[i][j].sizeIntance << "\n\n";
         }
     }
+
+    string data;
+    for (int i = 0; i < NUM_ALGORITHMS; i++)
+    {
+        for (int j = 0; j < NUM_INTANCES; j++)
+        {
+            data += switchSortStr(i + 1) + (string) "\t" +
+                    to_string(result[i][j].numComparisons) + "\t" +
+                    to_string(result[i][j].numSwaps) + "\t" +
+                    to_string(result[i][j].time.count()) + "\t" +
+                    to_string(result[i][j].sizeIntance) + "\n";
+        }
+    }
+    saveOnFile(data);
 }
 
 int switchModeMenu()
@@ -274,10 +326,10 @@ int main()
         }
         if (mode == 0)
         {
-            auto start = std::chrono::high_resolution_clock::now();
+            // auto start = std::chrono::high_resolution_clock::now();
             runAll();
-            auto end = std::chrono::high_resolution_clock::now();
-            cout << "\nTempo de execucao TOTAL: " << std::chrono::duration_cast<std::chrono::seconds>(end - start).count() << "s" << endl;
+            // auto end = std::chrono::high_resolution_clock::now();
+            // cout << "\nTempo de execucao TOTAL: " << std::chrono::duration_cast<std::chrono::seconds>(end - start).count() << "s" << endl;
             tools::pause();
             option = restartMenu();
             continue;
@@ -301,7 +353,10 @@ int main()
         cout << "Sort: " << switchSortStr(sortMethod) << endl;
         cout << "Ordenando..." << endl;
 
-        AlgorithmDetails detail = sort(arr, switchSort<int>(sortMethod), print);
+        AlgorithmDetails detail = sort(
+            arr,
+            switchSort<int>(sortMethod),
+            print);
 
         cout << "Ordenacao concluida!" << endl;
         printDetail(detail);
