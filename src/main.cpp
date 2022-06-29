@@ -238,6 +238,7 @@ int switchModeMenu()
     cin >> mode;
     return mode;
 }
+
 int switchSortMenu()
 {
     cout << "Trabalho Pratico 1 - AEDII"
@@ -254,6 +255,7 @@ int switchSortMenu()
     cin >> sortMethod;
     return sortMethod;
 }
+
 int switchInstanceMenu()
 {
     cout << "MENU"
@@ -289,6 +291,7 @@ void getDataFromConsole(vector<int> &arr)
         arr.push_back(num);
     }
 }
+
 void printDetail(AlgorithmDetails detail)
 {
     cout << "Tempo de execucao: " << detail.time.count() << "us" << endl;

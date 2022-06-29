@@ -39,34 +39,3 @@ void saveData(string path, string fileName, string data)
     ost << data;
     ost.close();
 }
-
-void saveData(string path, string fileName, std::vector<double> data)
-{
-    ofstream ost;
-    ost.open(path + fileName, ofstream::out | ofstream::trunc);
-
-    if (!ost.is_open() || ost.fail())
-    {
-        cout << "\n\nERRO AO SALVAR OS DADOS\n\n";
-        return;
-    }
-
-    for (int i = 0; i < data.size(); i++)
-    {
-        ost << data[i] << endl;
-    }
-    ost.close();
-}
-/*
-int main()
-{
-    vector<int> data;
-    getDataFromInstance("../../data/in/", "ListaAleatoria-1000.txt", data);
-    cout << "Lista Aleatoria - 1000: ";
-    for (auto i : data)
-    {
-        cout << i << "\n";
-    }
-    saveData("../../data/out/", "test.dat", to_string(1000));
-
-}*/

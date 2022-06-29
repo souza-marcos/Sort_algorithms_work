@@ -19,8 +19,15 @@ struct AlgorithmDetails
     int sizeIntance = 0;
 };
 
-// Implementation of the sorting functions
 
+/**
+ * @brief Sorting an array using bubble sort algorithm
+ * 
+ * @tparam T Type of data, Generic
+ * @param arr Array will be sorted
+ * @param print Function to print the elements after all swaps 
+ * @return AlgorithmDetails struct
+ */
 template <typename T>
 AlgorithmDetails bubbleSort(
     std::vector<T> &arr,
@@ -160,12 +167,7 @@ AlgorithmDetails quickSort(
 
     for (int i = init; i <= end; i++)
     {
-        /*std::cout << "P: " << pivotIndex << "\n"
-                  << "INIT " << init << "\n"
-                  << "end " << end << "\n"
-                  << "i " << i << "\n\n";*/
-        //std::cout << i << "\n";
-        if (arr[i] <= arr[pivotIndex]) //
+        if (arr[i] <= arr[pivotIndex])
         {
             T aux = arr[i];
             arr[i] = arr[lessN];
@@ -184,7 +186,6 @@ AlgorithmDetails quickSort(
         }
         details.numComparisons++;
     }
-    // system("pause");
 
     pivotIndex = lessN - 1;
 
